@@ -1010,15 +1010,17 @@ function parseInput(input) {
   }));
 }
 
-function pwValid(pw, char, min, max) {
-  let x = pw.split("").filter(c => c === char).length;
-  return x >= min && x <= max
+function pwValid(pw, char, i, j) {
+  let characters = pw.split("")
+  return [characters[i-1] === char, characters[j-1] === char].filter(x => !!x).length === 1
 }
 
 
 function solve(input) {
-  return parseInput(input)
-    .filter(d => pwValid(d.pw, d.letter, d.min, d.max)).length
+  let validPws = parseInput(input)
+  .filter(d => pwValid(d.pw, d.letter, d.min, d.max));
+  console.log(validPws)
+  return validPws.length
 }
 
 console.log(solve(input))
