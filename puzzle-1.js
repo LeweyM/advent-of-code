@@ -16,7 +16,7 @@ function solve(arr) {
   return "no solution"
 }
 
-const input = [1977,
+const puzzle1 = [1977,
   1802,
   1856,
   1309,
@@ -218,5 +218,5 @@ const input = [1977,
   1849,
 ]
 
-let result = solve(input);
+let result = solve(puzzle1);
 console.log(result)
