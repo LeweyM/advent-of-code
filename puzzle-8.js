@@ -1046,7 +1046,44 @@ function parsePassport(input) {
   }, {})
 }
 
-function solve() {
+function checkDate(input, min, max) {
+  let number = parseInt(input, 10);
+  return input.length === 4 && number >= min && number <= max;
+}
+
+function isNumber(input) {
+  return !isNaN(parseInt(input, 10));
+}
+
+function allTrue(input, predicate) {
+  return input.reduce((acc, cur) => acc && predicate(cur), true);
+}
+
+function isAtoF(ch) {
+  return ch >= 'a' && ch <= 'f'
+}
+
+function checkHeight(input) {
+  if (input.slice(-2) === "cm") {
+    let num = parseInt(input.slice(0, -2));
+    return num >= 150 && num <= 193
+  } else if (input.slice(-2) === "in") {
+    let num = parseInt(input.slice(0, -2));
+    return num >= 59 && num <= 76
+  } else return false
+}
+
+const validators = {
+  "byr": (input) => checkDate(input, 1920, 2002),
+  "iyr": (input) => checkDate(input, 2010, 2020),
+  "eyr": (input) => checkDate(input, 2020, 2030),
+  "hgt": (input) => checkHeight(input),
+  "hcl": (input) => input[0] === "#" && input.length === 7 && allTrue(input.slice(1, 7).split(""), (c => isAtoF(c) || isNumber(c))),
+  "ecl": (input) => (new Set(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])).has(input),
+  "pid": (input) => input.length === 9 && isNumber(input),
+}
+
+function solve(input) {
   let needed = ["byr",
     "iyr",
     "eyr",
@@ -1058,11 +1095,14 @@ function solve() {
   ]
   let passports = parseInput(input);
 
-  return passports.filter(pp => needed.reduce(
-      (acc, cur) => acc && pp.hasOwnProperty(cur), true)
-  ).length
+  return passports
+    .filter(pp => needed.reduce((acc, cur) => acc && pp.hasOwnProperty(cur), true))
+    .filter(pp => needed.reduce((acc, cur) => acc && validators[cur](pp[cur]), true)).length
 }
 
-console.log(solve())
+console.log(solve(`eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97f40 hgt:165cm`) === 1)
+//
+console.log(solve(input))
 
 
